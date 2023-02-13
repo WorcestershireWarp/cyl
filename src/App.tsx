@@ -1,32 +1,24 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+class Assignment {
+	constructor(public name?: string, public grade?: number, public weight?: number) {
+	this.name = name ?? ""
+	this.grade = grade ?? 0
+	this.weight = weight ?? 0
+	}
+}
 
+function App() {
+  const [assignments, setAssignments] = useState<Assignment[]>([new Assignment('lol', 50, 0.25)]);
+  const assignmentList = assignments.map(assignment => <tr><td><button>Delete</button></td><td><input value={assignment.name}></input></td><td><input value={assignment.grade}></input></td><td><input value={assignment.weight}></input></td></tr>)
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+	<table>
+		<tr><th/><th>Assignment</th><th>Grade</th><th>Weight</th></tr>
+	{assignmentList}
+		<tr><td style={{fontWeight: 500, color: '#000'}}>Create new assignment: </td><td><input/></td><td><input/></td><td><input/></td></tr>
+	</table>
     </div>
   )
 }
