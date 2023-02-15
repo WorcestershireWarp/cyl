@@ -40,3 +40,16 @@
 .read-the-docs {
   color: #888;
 }
+
+.average { 
+  font-size: 3em;
+  font-weight: 700;
+}
+
+.average-passing {
+  color: #00AA00
+}
+
+.average-failing {
+  color: #FF0000
+}

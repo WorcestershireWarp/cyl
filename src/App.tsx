@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from "react";
 import "./App.css";
 import weightedAverage from "./weightedAverage";
+import classNames from "classnames";
 
 export class Assignment {
   public theoretical;
@@ -95,13 +96,15 @@ function App() {
       </td>
     </tr>
   ));
+  const average = weightedAverage(assignments, [0.6, 0.25, 0.15]);
+  const averageClass = classNames("average", {
+    "average-failing": average < 70,
+  });
   return (
     <div className="App">
       <div>
         Average: <br />
-        <span style={{ fontSize: "3em", fontWeight: "700" }}>
-          {weightedAverage(assignments, [0.6, 0.25, 0.15])}
-        </span>
+        <span className={averageClass}>{average}</span>
       </div>
       <table>
         <thead>
