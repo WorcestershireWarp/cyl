@@ -1,30 +1,44 @@
 import { ChangeEvent, useState } from "react";
 import "./App.css";
+import weightedAverage from "./weightedAverage";
 
-class Assignment {
+export class Assignment {
+  public theoretical;
   constructor(
-    public name?: string,
-    public grade?: number,
-    public weight?: number
+    public name: string,
+    public grade: number,
+    public weight: number,
+    theoretical?: boolean
   ) {
     this.name = name ?? "";
     this.grade = grade ?? 0;
     this.weight = weight ?? 0;
+    this.theoretical = theoretical ?? false;
   }
 }
-function weightedAverage(assignments: Assignment[], weights: number[]) {/*TODO*/}
 
 function App() {
   const [assignments, setAssignments] = useState<Assignment[]>([
     new Assignment("Essay", 94, 0.25),
+    new Assignment("Essay", 63, 0.6),
+    new Assignment("Essay", 22, 0.6),
+    new Assignment("Essay", 100, 0.15),
+    new Assignment("Essay", 64, 0.6),
+    new Assignment("Essay", 0, 0.25),
   ]);
-  const onModifyName = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  const onModifyName = (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const temp = [...assignments];
     temp[index].name = event.target.value;
     setAssignments(temp);
   };
 
-  const onModifyGrade = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  const onModifyGrade = (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (Number(event.target.value) < 0) {
       return;
     }
@@ -33,7 +47,10 @@ function App() {
     temp[index].grade = Number(event.target.value);
     setAssignments(temp);
   };
-  const onModifyWeight = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+  const onModifyWeight = (
+    event: ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     if (Number(event.target.value) > 1 || Number(event.target.value) < 0) {
       return;
     }
@@ -80,14 +97,15 @@ function App() {
   ));
   return (
     <div className="App">
+      <p>Average: {weightedAverage(assignments, [0.6, 0.25, 0.15])}</p>
       <table>
         <thead>
           <tr>
             <th />
             <th>Assignment</th>
             <th>Grade</th>
-            <th>Weight</th> 
-	    <th>Theoretical?</th>
+            <th>Weight</th>
+            <th>Theoretical?</th>
           </tr>
         </thead>{" "}
         <tbody>
