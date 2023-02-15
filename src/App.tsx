@@ -12,6 +12,7 @@ class Assignment {
     this.weight = weight ?? 0;
   }
 }
+function weightedAverage(assignments: Assignment[], weights: number[]) {/*TODO*/}
 
 function App() {
   const [assignments, setAssignments] = useState<Assignment[]>([
@@ -52,7 +53,7 @@ function App() {
           onChange={(event) => {
             onModifyName(event, index);
           }}
-        ></input>
+        />
       </td>
       <td>
         <input
@@ -61,7 +62,7 @@ function App() {
             onModifyGrade(event, index);
           }}
           type="number"
-        ></input>
+        />
       </td>
       <td>
         <input
@@ -70,7 +71,7 @@ function App() {
           onChange={(event) => {
             onModifyWeight(event, index);
           }}
-        ></input>
+        />
       </td>
       <td>
         <input type="checkbox" />
