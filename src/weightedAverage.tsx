@@ -27,13 +27,13 @@ export default function weightedAverage(
     ];
   })(array, weights);
   if (b.length + c.length === 0) {
-    return gradeArrayAvg(a)
+    return gradeArrayAvg(a);
   }
   if (a.length + c.length === 0) {
-    return gradeArrayAvg(b)
+    return gradeArrayAvg(b);
   }
   if (b.length + a.length === 0) {
-    return gradeArrayAvg(c)
+    return gradeArrayAvg(c);
   }
   const bc = solveForTwoWeights(weights[1], weights[2]),
     ac = solveForTwoWeights(weights[0], weights[2]),
@@ -69,13 +69,11 @@ export default function weightedAverage(
             ),
           ]
         : c),
-    console.log(
-      `${gradeArrayAvg(a)}*${weights[0]}+${gradeArrayAvg(b)}*${
-        weights[1]
-      }+${gradeArrayAvg(c)}*${weights[2]}`
-    ),
-    gradeArrayAvg(a) * weights[0] +
-      gradeArrayAvg(b) * weights[1] +
-      gradeArrayAvg(c) * weights[2]
+    Math.round(
+      (gradeArrayAvg(a) * weights[0] +
+        gradeArrayAvg(b) * weights[1] +
+        gradeArrayAvg(c) * weights[2]) *
+        100
+    ) / 100
   );
 }

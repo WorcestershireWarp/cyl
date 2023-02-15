@@ -97,7 +97,12 @@ function App() {
   ));
   return (
     <div className="App">
-      <p>Average: {weightedAverage(assignments, [0.6, 0.25, 0.15])}</p>
+      <div>
+        Average: <br />
+        <span style={{ fontSize: "3em", fontWeight: "700" }}>
+          {weightedAverage(assignments, [0.6, 0.25, 0.15])}
+        </span>
+      </div>
       <table>
         <thead>
           <tr>
