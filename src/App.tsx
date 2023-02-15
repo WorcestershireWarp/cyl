@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import "./App.css";
 
 class Assignment {
@@ -18,27 +18,27 @@ function App() {
   const [assignments, setAssignments] = useState<Assignment[]>([
     new Assignment("Essay", 94, 0.25),
   ]);
-  const onModifyName = (event, index) => {
+  const onModifyName = (event: ChangeEvent<HTMLInputElement>, index: number) => {
     const temp = [...assignments];
     temp[index].name = event.target.value;
     setAssignments(temp);
   };
 
-  const onModifyGrade = (event, index) => {
-    if (event.target.value < 0) {
+  const onModifyGrade = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+    if (Number(event.target.value) < 0) {
       return;
     }
 
     const temp = [...assignments];
-    temp[index].grade = event.target.value;
+    temp[index].grade = Number(event.target.value);
     setAssignments(temp);
   };
-  const onModifyWeight = (event, index) => {
-    if (event.target.value > 1 || event.target.value < 0) {
+  const onModifyWeight = (event: ChangeEvent<HTMLInputElement>, index: number) => {
+    if (Number(event.target.value) > 1 || Number(event.target.value) < 0) {
       return;
     }
     const temp = [...assignments];
-    temp[index].weight = event.target.value;
+    temp[index].weight = Number(event.target.value);
     setAssignments(temp);
   };
 
