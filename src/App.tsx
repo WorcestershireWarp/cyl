@@ -74,7 +74,7 @@ function App() {
       </td>
       <td>
         <input
-          value={assignment.grade}
+          value={assignment.grade.toString()}
           onChange={(event) => {
             onModifyGrade(event, index);
           }}
@@ -83,7 +83,7 @@ function App() {
       </td>
       <td>
         <input
-          value={assignment.weight}
+          value={assignment.weight.toString()}
           type="number"
           onChange={(event) => {
             onModifyWeight(event, index);
