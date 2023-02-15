@@ -1,26 +1,114 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
 class Assignment {
-	constructor(public name?: string, public grade?: number, public weight?: number) {
-	this.name = name ?? ""
-	this.grade = grade ?? 0
-	this.weight = weight ?? 0
-	}
+  constructor(
+    public name?: string,
+    public grade?: number,
+    public weight?: number
+  ) {
+    this.name = name ?? "";
+    this.grade = grade ?? 0;
+    this.weight = weight ?? 0;
+  }
 }
 
 function App() {
-  const [assignments, setAssignments] = useState<Assignment[]>([new Assignment('lol', 50, 0.25)]);
-  const assignmentList = assignments.map(assignment => <tr><td><button>Delete</button></td><td><input value={assignment.name}></input></td><td><input value={assignment.grade}></input></td><td><input value={assignment.weight}></input></td></tr>)
+  const [assignments, setAssignments] = useState<Assignment[]>([
+    new Assignment("Essay", 94, 0.25),
+  ]);
+  const onModifyName = (event, index) => {
+    const temp = [...assignments];
+    temp[index].name = event.target.value;
+    setAssignments(temp);
+  };
+
+  const onModifyGrade = (event, index) => {
+    if (event.target.value < 0) {
+      return;
+    }
+
+    const temp = [...assignments];
+    temp[index].grade = event.target.value;
+    setAssignments(temp);
+  };
+  const onModifyWeight = (event, index) => {
+    if (event.target.value > 1 || event.target.value < 0) {
+      return;
+    }
+    const temp = [...assignments];
+    temp[index].weight = event.target.value;
+    setAssignments(temp);
+  };
+
+  const assignmentList = assignments.map((assignment, index) => (
+    <tr key={index}>
+      <td>
+        <button>Delete</button>
+      </td>
+      <td>
+        <input
+          value={assignment.name}
+          onChange={(event) => {
+            onModifyName(event, index);
+          }}
+        ></input>
+      </td>
+      <td>
+        <input
+          value={assignment.grade}
+          onChange={(event) => {
+            onModifyGrade(event, index);
+          }}
+          type="number"
+        ></input>
+      </td>
+      <td>
+        <input
+          value={assignment.weight}
+          type="number"
+          onChange={(event) => {
+            onModifyWeight(event, index);
+          }}
+        ></input>
+      </td>
+      <td>
+        <input type="checkbox" />
+      </td>
+    </tr>
+  ));
   return (
     <div className="App">
-	<table>
-		<tr><th/><th>Assignment</th><th>Grade</th><th>Weight</th></tr>
-	{assignmentList}
-		<tr><td style={{fontWeight: 500, color: '#000'}}>Create new assignment: </td><td><input/></td><td><input/></td><td><input/></td></tr>
-	</table>
+      <table>
+        <thead>
+          <tr>
+            <th />
+            <th>Assignment</th>
+            <th>Grade</th>
+            <th>Weight</th> 
+	    <th>Theoretical?</th>
+          </tr>
+        </thead>{" "}
+        <tbody>
+          {assignmentList}
+          <tr>
+            <td style={{ fontWeight: 500, color: "#000" }}>
+              <button disabled>Add assignment</button>{" "}
+            </td>
+            <td>
+              <input />
+            </td>
+            <td>
+              <input />
+            </td>
+            <td>
+              <input />
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
