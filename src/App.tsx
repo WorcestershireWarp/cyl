@@ -3,6 +3,7 @@ import "./App.css";
 import weightedAverage from "./weightedAverage";
 import classNames from "classnames";
 
+
 export class Assignment {
   public theoretical;
   constructor(
@@ -27,6 +28,31 @@ function App() {
     new Assignment("Essay", 64, 0.6),
     new Assignment("Essay", 0, 0.25),
   ]);
+  const [createAssignment, setCreateAssignment] = useState<Assignment>(
+    new Assignment("", 0, 0, false)
+  )
+  const onAddAssignment = () => {
+    setAssignments([...assignments, createAssignment]);
+    setCreateAssignment(new Assignment("", 0, 0, false));
+  }
+  const onModifyCreate = (
+    event: ChangeEvent<HTMLInputElement>,
+    property: string
+  ) => {
+    const newAssignment = { ...createAssignment }
+    if (newAssignment.hasOwnProperty(property)) {
+      if ((property === "grade" || property === "weight") && (Number(event.target.value) < 0 || isNaN(Number(event.target.value)))) {
+        return
+      }
+      if (property === "weight" && Number(event.target.value) > 1) {return;}
+      // @ts-ignore
+      newAssignment[property] =
+        property === "grade" || property === "weight"
+          ? Number(event.target.value)
+          : event.target.value;
+    }
+    setCreateAssignment(newAssignment)
+  }
   const onModifyName = (
     event: ChangeEvent<HTMLInputElement>,
     index: number
@@ -120,16 +146,19 @@ function App() {
           {assignmentList}
           <tr>
             <td style={{ fontWeight: 500, color: "#000" }}>
-              <button disabled>Add assignment</button>{" "}
+              <button onClick={() => {onAddAssignment()}} disabled={createAssignment.name == ""}>Add assignment</button>{" "}
             </td>
             <td>
-              <input />
+              <input value={createAssignment.name.toString()} onChange={(event) => onModifyCreate(event, "name")}/>
             </td>
             <td>
-              <input />
+              <input value={createAssignment.grade.toString()} type="number" onChange={(event) => onModifyCreate(event, "grade")}/>
             </td>
             <td>
-              <input />
+              <input value={createAssignment.weight.toString()} type="number" onChange={(event) => onModifyCreate(event, "weight")}/>
+            </td>
+            <td>
+              <input type='checkbox' />
             </td>
           </tr>
         </tbody>
