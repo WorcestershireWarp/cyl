@@ -7,18 +7,31 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}"
+    "lint": "eslint"
   },
   "dependencies": {
+    "@typescript-eslint/parser": ">=5.0.0 <6.0.0",
     "classnames": "^2.3.2",
+    "eslint-plugin-sonarjs": "^0.18.0",
     "prettier": "^2.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@brettz9/eslint-plugin": "^1.0.4",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@vitejs/plugin-react-swc": "^3.1.0",
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-config-standard-with-typescript": "^34.0.0",
+    "eslint-plugin-github": "^4.6.1",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-unicorn": "^45.0.2",
     "onchange": "^7.1.0",
     "typescript": "^4.9.5",
     "vite": "^4.1.1"

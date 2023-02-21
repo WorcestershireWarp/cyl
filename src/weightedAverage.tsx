@@ -1,13 +1,11 @@
 import { Assignment } from "./App";
 
 function gradeArrayAvg(array: Assignment[]) {
-  var sum = 0;
-  return (
-    array.forEach(function (item) {
-      sum += item.grade;
-    }),
-    sum / array.length
-  );
+  let sum = 0;
+  for (const item of array) {
+    sum += item.grade;
+  }
+  return sum / array.length;
 }
 function solveForTwoWeights(weightA: number, weightB: number) {
   return [
@@ -19,13 +17,7 @@ export default function weightedAverage(
   array: Assignment[],
   weights: number[]
 ) {
-  let [a, b, c] = (function (array, weights) {
-    return [
-      array.filter((i) => i.weight == weights[0]),
-      array.filter((i) => i.weight == weights[1]),
-      array.filter((i) => i.weight == weights[2]),
-    ];
-  })(array, weights);
+  let [a, b, c] = seperateArrayByWeights(array, weights);
   if (b.length + c.length === 0) {
     return gradeArrayAvg(a);
   }
@@ -35,35 +27,36 @@ export default function weightedAverage(
   if (b.length + a.length === 0) {
     return gradeArrayAvg(c);
   }
-  const bc = solveForTwoWeights(weights[1], weights[2]),
-    ac = solveForTwoWeights(weights[0], weights[2]),
-    ba = solveForTwoWeights(weights[1], weights[0]);
+  const bc = solveForTwoWeights(weights[1], weights[2]);
+  const ac = solveForTwoWeights(weights[0], weights[2]);
+  const ba = solveForTwoWeights(weights[1], weights[0]);
+  const placeholderText = "Placeholder; see settings";
   return (
     (a =
-      0 == a.length
+      a.length === 0
         ? [
             new Assignment(
-              "Placeholder; see settings",
+              placeholderText,
               gradeArrayAvg(b) * bc[0] + gradeArrayAvg(c) * bc[1],
               weights[0]
             ),
           ]
         : a),
     (b =
-      0 == b.length
+      b.length === 0
         ? [
             new Assignment(
-              "Placeholder; see settings",
+              placeholderText,
               gradeArrayAvg(a) * ac[0] + gradeArrayAvg(c) * ac[1],
               weights[1]
             ),
           ]
         : b),
     (c =
-      0 == c.length
+      c.length === 0
         ? [
             new Assignment(
-              "Placeholder; see settings",
+              placeholderText,
               gradeArrayAvg(b) * ba[0] + gradeArrayAvg(a) * ba[1],
               weights[2]
             ),
@@ -76,4 +69,11 @@ export default function weightedAverage(
         100
     ) / 100
   );
+}
+function seperateArrayByWeights(array: Assignment[], weights: number[]) {
+  return [
+    array.filter((index) => index.weight === weights[0]),
+    array.filter((index) => index.weight === weights[1]),
+    array.filter((index) => index.weight === weights[2]),
+  ];
 }

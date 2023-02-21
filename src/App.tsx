@@ -1,8 +1,8 @@
-import { ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 import "./App.css";
 import weightedAverage from "./weightedAverage";
 import classNames from "classnames";
-
+import React from "react";
 
 export class Assignment {
   public theoretical;
@@ -30,36 +30,42 @@ function App() {
   ]);
   const [createAssignment, setCreateAssignment] = useState<Assignment>(
     new Assignment("", 0, 0, false)
-  )
+  );
   const onAddAssignment = () => {
     setAssignments([...assignments, createAssignment]);
     setCreateAssignment(new Assignment("", 0, 0, false));
-  }
+  };
   const onModifyCreate = (
     event: ChangeEvent<HTMLInputElement>,
     property: string
   ) => {
-    const newAssignment = { ...createAssignment }
-    if (newAssignment.hasOwnProperty(property)) {
-      if ((property === "grade" || property === "weight") && (Number(event.target.value) < 0 || isNaN(Number(event.target.value)))) {
-        return
+    const newAssignment = { ...createAssignment };
+    if (Object.prototype.hasOwnProperty.call(newAssignment, property)) {
+      if (
+        (property === "grade" || property === "weight") &&
+        (Number(event.target.value) < 0 ||
+          Number.isNaN(Number(event.target.value)))
+      ) {
+        return;
       }
-      if (property === "weight" && Number(event.target.value) > 1) {return;}
-      // @ts-ignore
+      if (property === "weight" && Number(event.target.value) > 1) {
+        return;
+      }
+      // @ts-expect-error: hasOwnProperty ensures next line is type-safe.
       newAssignment[property] =
         property === "grade" || property === "weight"
           ? Number(event.target.value)
           : event.target.value;
     }
-    setCreateAssignment(newAssignment)
-  }
+    setCreateAssignment(newAssignment);
+  };
   const onModifyName = (
     event: ChangeEvent<HTMLInputElement>,
     index: number
   ) => {
-    const temp = [...assignments];
-    temp[index].name = event.target.value;
-    setAssignments(temp);
+    const temporary = [...assignments];
+    temporary[index].name = event.target.value;
+    setAssignments(temporary);
   };
 
   const onModifyGrade = (
@@ -70,9 +76,9 @@ function App() {
       return;
     }
 
-    const temp = [...assignments];
-    temp[index].grade = Number(event.target.value);
-    setAssignments(temp);
+    const temporary = [...assignments];
+    temporary[index].grade = Number(event.target.value);
+    setAssignments(temporary);
   };
   const onModifyWeight = (
     event: ChangeEvent<HTMLInputElement>,
@@ -81,9 +87,9 @@ function App() {
     if (Number(event.target.value) > 1 || Number(event.target.value) < 0) {
       return;
     }
-    const temp = [...assignments];
-    temp[index].weight = Number(event.target.value);
-    setAssignments(temp);
+    const temporary = [...assignments];
+    temporary[index].weight = Number(event.target.value);
+    setAssignments(temporary);
   };
 
   const assignmentList = assignments.map((assignment, index) => (
@@ -146,19 +152,43 @@ function App() {
           {assignmentList}
           <tr>
             <td style={{ fontWeight: 500, color: "#000" }}>
-              <button onClick={() => {onAddAssignment()}} disabled={createAssignment.name == ""}>Add assignment</button>{" "}
+              <button
+                onClick={() => {
+                  onAddAssignment();
+                }}
+                disabled={createAssignment.name === ""}
+              >
+                Add assignment
+              </button>{" "}
             </td>
             <td>
-              <input value={createAssignment.name.toString()} onChange={(event) => onModifyCreate(event, "name")}/>
+              <input
+                value={createAssignment.name.toString()}
+                onChange={(event) => {
+                  onModifyCreate(event, "name");
+                }}
+              />
             </td>
             <td>
-              <input value={createAssignment.grade.toString()} type="number" onChange={(event) => onModifyCreate(event, "grade")}/>
+              <input
+                value={createAssignment.grade.toString()}
+                type="number"
+                onChange={(event) => {
+                  onModifyCreate(event, "grade");
+                }}
+              />
             </td>
             <td>
-              <input value={createAssignment.weight.toString()} type="number" onChange={(event) => onModifyCreate(event, "weight")}/>
+              <input
+                value={createAssignment.weight.toString()}
+                type="number"
+                onChange={(event) => {
+                  onModifyCreate(event, "weight");
+                }}
+              />
             </td>
             <td>
-              <input type='checkbox' />
+              <input type="checkbox" />
             </td>
           </tr>
         </tbody>

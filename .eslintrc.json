@@ -1,0 +1,37 @@
+{
+    "env": {
+        "browser": true,
+        "es2021": true
+    },
+    "extends": [
+        "plugin:react/recommended",
+        "standard-with-typescript",
+	"plugin:sonarjs/recommended",
+	"plugin:unicorn/recommended",
+	"plugin:github/recommended",
+	"plugin:github/browser",
+	"plugin:github/react",
+	"plugin:github/typescript",
+	"plugin:@brettz9/es6",
+	"prettier"
+    ],
+    "overrides": [
+    ],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+	"project": ".\\tsconfig.json"
+    },
+    "plugins": [
+        "react",
+	"sonarjs",
+	"unicorn",
+	"github",
+	"@brettz9"
+    ],
+    "rules": {
+        "filenames/match-regex": "off",
+        "unicorn/filename-case": "off",
+        "import/no-unresolved": "off"
+    }
+}
