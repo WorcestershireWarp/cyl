@@ -10,7 +10,7 @@ export class Assignment {
     this.name = name;
     this.grade = grade;
     this.weight = weight;
-    this.theoretical = theoretical ?? false; // If "theoretical" wasn't provided in the constructor, then assume it's false. This makes code less complex.
+    this.theoretical = theoretical ?? false; // If "theoretical" wasn't provided in the constructor, then assume it's false. This makes code easier to read.
   }
 }
 
@@ -49,37 +49,34 @@ export function weightedAverage(array: Assignment[], weights: number[]) {
   const ac = solveForTwoWeights(weights[0], weights[2]);
   const ba = solveForTwoWeights(weights[1], weights[0]);
   const placeholderText = "Placeholder; see settings";
+  if (a.length === 0) {
+    a = [
+      new Assignment(
+        placeholderText,
+        gradeArrayAvg(b) * bc[0] + gradeArrayAvg(c) * bc[1],
+        weights[0]
+      ),
+    ];
+  }
+  if (b.length === 0) {
+    b = [
+      new Assignment(
+        placeholderText,
+        gradeArrayAvg(a) * ac[0] + gradeArrayAvg(c) * ac[1],
+        weights[1]
+      ),
+    ];
+  }
+  if (c.length === 0) {
+    c = [
+      new Assignment(
+        placeholderText,
+        gradeArrayAvg(b) * ba[0] + gradeArrayAvg(a) * ba[1],
+        weights[2]
+      ),
+    ];
+  }
   return (
-    (a =
-      a.length === 0
-        ? [
-            new Assignment(
-              placeholderText,
-              gradeArrayAvg(b) * bc[0] + gradeArrayAvg(c) * bc[1],
-              weights[0]
-            ),
-          ]
-        : a),
-    (b =
-      b.length === 0
-        ? [
-            new Assignment(
-              placeholderText,
-              gradeArrayAvg(a) * ac[0] + gradeArrayAvg(c) * ac[1],
-              weights[1]
-            ),
-          ]
-        : b),
-    (c =
-      c.length === 0
-        ? [
-            new Assignment(
-              placeholderText,
-              gradeArrayAvg(b) * ba[0] + gradeArrayAvg(a) * ba[1],
-              weights[2]
-            ),
-          ]
-        : c),
     // Finally, return a weighted average.
     Math.round(
       (gradeArrayAvg(a) * weights[0] +
