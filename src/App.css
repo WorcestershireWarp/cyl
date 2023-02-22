@@ -10,6 +10,17 @@
   font-weight: 700;
 }
 
+.averages {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.theory {
+  opacity: 0.5;
+}
+
 .average-passing {
   color: #0A0
 }

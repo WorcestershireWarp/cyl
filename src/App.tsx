@@ -6,12 +6,9 @@ import React from "react";
 
 function App() {
   const [assignments, setAssignments] = useState<Assignment[]>([
-    new Assignment("Essay", 94, 0.25),
-    new Assignment("Essay", 63, 0.6),
-    new Assignment("Essay", 22, 0.6),
-    new Assignment("Essay", 100, 0.15),
-    new Assignment("Essay", 64, 0.6),
-    new Assignment("Essay", 0, 0.25),
+    new Assignment("Example quiz", 94, 0.25),
+    new Assignment("Example test", 74, 0.6),
+    new Assignment("Example homework assignment", 0, 0.15),
   ]);
   const [createAssignment, setCreateAssignment] = useState<Assignment>(
     new Assignment("", 0, 0, false)
@@ -36,11 +33,14 @@ function App() {
       if (property === "weight" && Number(event.target.value) > 1) {
         return;
       }
-      // @ts-expect-error: hasOwnProperty ensures next line is type-safe.
-      newAssignment[property] =
-        property === "grade" || property === "weight"
-          ? Number(event.target.value)
-          : event.target.value;
+      if (property === "grade" || property === "weight") {
+        newAssignment[property] = Number(event.target.value);
+      } else if (property === "theoretical") {
+        newAssignment[property] = !newAssignment.theoretical;
+      } else {
+        // @ts-expect-error: hasOwnProperty ensures next line is type-safe.
+        newAssignment[property] = event.target.value;
+      }
     }
     setCreateAssignment(newAssignment);
   };
@@ -77,10 +77,28 @@ function App() {
     setAssignments(temporary);
   };
 
+  const onDeleteAssignment = (index: number) => {
+    const temporary = [...assignments];
+    temporary.splice(index, 1);
+    setAssignments(temporary);
+  };
+
+  const onModifyTheoretical = (index: number) => {
+    const temporary = [...assignments];
+    temporary[index].theoretical = !temporary[index].theoretical;
+    setAssignments(temporary);
+  };
+
   const assignmentList = assignments.map((assignment, index) => (
     <tr key={index}>
       <td>
-        <button>Delete</button>
+        <button
+          onClick={() => {
+            onDeleteAssignment(index);
+          }}
+        >
+          Delete
+        </button>
       </td>
       <td>
         <input
@@ -109,19 +127,55 @@ function App() {
         />
       </td>
       <td>
-        <input type="checkbox" />
+        <input
+          type="checkbox"
+          onChange={() => {
+            onModifyTheoretical(index);
+          }}
+          checked={assignment.theoretical}
+        />
       </td>
     </tr>
   ));
-  const average = weightedAverage(assignments, [0.6, 0.25, 0.15]);
-  const averageClass = classNames("average", {
-    "average-failing": average < 70,
+  const realAverage = weightedAverage(
+    assignments.filter((assignment) => !assignment.theoretical),
+    [0.6, 0.25, 0.15]
+  );
+  const theoreticalAverage = weightedAverage(assignments, [0.6, 0.25, 0.15]);
+  const showTheoreticalAverage = assignments.some(
+    (assignment) => assignment.theoretical
+  );
+  const theoryAverageClass = classNames("average", {
+    "average-failing": theoreticalAverage < 70,
+  });
+  const realAverageClass = classNames(theoryAverageClass, {
+    theory: showTheoreticalAverage,
+    "average-failing": realAverage < 70,
   });
   return (
     <div className="App">
-      <div>
-        Average: <br />
-        <span className={averageClass}>{average}</span>
+      <div className="averages">
+        <span>
+          Average:
+          <br />
+          <span className={realAverageClass}>
+            {realAverage.toLocaleString("en", {
+              useGrouping: false,
+              minimumFractionDigits: 2,
+            })}
+          </span>
+        </span>
+        {showTheoreticalAverage && (
+          <span>
+            Theoretical: <br />
+            <span className={theoryAverageClass}>
+              {theoreticalAverage.toLocaleString("en", {
+                useGrouping: false,
+                minimumFractionDigits: 2,
+              })}
+            </span>
+          </span>
+        )}
       </div>
       <table>
         <thead>
@@ -173,7 +227,13 @@ function App() {
               />
             </td>
             <td>
-              <input type="checkbox" />
+              <input
+                type="checkbox"
+                checked={createAssignment.theoretical}
+                onChange={(event) => {
+                  onModifyCreate(event, "theoretical");
+                }}
+              />
             </td>
           </tr>
         </tbody>
