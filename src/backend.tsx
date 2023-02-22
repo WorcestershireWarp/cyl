@@ -1,5 +1,20 @@
-import { Assignment } from "./App";
+// Create a class to hold assignment data in a more efficient manner.
+export class Assignment {
+  public theoretical;
+  constructor(
+    public name: string,
+    public grade: number,
+    public weight: number,
+    theoretical?: boolean
+  ) {
+    this.name = name;
+    this.grade = grade;
+    this.weight = weight;
+    this.theoretical = theoretical ?? false; // If "theoretical" wasn't provided in the constructor, then assume it's false. This makes code less complex.
+  }
+}
 
+// Average the "grade" field of each assignment in an array
 function gradeArrayAvg(array: Assignment[]) {
   let sum = 0;
   for (const item of array) {
@@ -7,17 +22,18 @@ function gradeArrayAvg(array: Assignment[]) {
   }
   return sum / array.length;
 }
+// If two weights combined don't equal 1, scale them proportionally so they do.
 function solveForTwoWeights(weightA: number, weightB: number) {
   return [
     (1 / (weightA + weightB)) * weightA,
     (1 / (weightA + weightB)) * weightB,
   ];
 }
-export default function weightedAverage(
-  array: Assignment[],
-  weights: number[]
-) {
+// Get a weighted average of assignments with three different weight amounts
+export function weightedAverage(array: Assignment[], weights: number[]) {
+  // Seperate array to be averaged seperately.
   let [a, b, c] = seperateArrayByWeights(array, weights);
+  // If all assignments have the same weight, return the average of the array.
   if (b.length + c.length === 0) {
     return gradeArrayAvg(a);
   }
@@ -27,6 +43,8 @@ export default function weightedAverage(
   if (b.length + a.length === 0) {
     return gradeArrayAvg(c);
   }
+  // If there are assignments for two weights, but not three, then the other two weights are scaled propertionally to equal one.
+  // This code checks if any array is empty, and if so, add a placeholder assignment that won't effect the average.
   const bc = solveForTwoWeights(weights[1], weights[2]);
   const ac = solveForTwoWeights(weights[0], weights[2]);
   const ba = solveForTwoWeights(weights[1], weights[0]);
@@ -62,6 +80,7 @@ export default function weightedAverage(
             ),
           ]
         : c),
+    // Finally, return a weighted average.
     Math.round(
       (gradeArrayAvg(a) * weights[0] +
         gradeArrayAvg(b) * weights[1] +

@@ -1,23 +1,8 @@
 import { type ChangeEvent, useState } from "react";
 import "./App.css";
-import weightedAverage from "./weightedAverage";
+import { weightedAverage, Assignment } from "./backend";
 import classNames from "classnames";
 import React from "react";
-
-export class Assignment {
-  public theoretical;
-  constructor(
-    public name: string,
-    public grade: number,
-    public weight: number,
-    theoretical?: boolean
-  ) {
-    this.name = name ?? "";
-    this.grade = grade ?? 0;
-    this.weight = weight ?? 0;
-    this.theoretical = theoretical ?? false;
-  }
-}
 
 function App() {
   const [assignments, setAssignments] = useState<Assignment[]>([
@@ -147,7 +132,7 @@ function App() {
             <th>Weight</th>
             <th>Theoretical?</th>
           </tr>
-        </thead>{" "}
+        </thead>
         <tbody>
           {assignmentList}
           <tr>
@@ -159,7 +144,7 @@ function App() {
                 disabled={createAssignment.name === ""}
               >
                 Add assignment
-              </button>{" "}
+              </button>
             </td>
             <td>
               <input
