@@ -22,6 +22,7 @@ function gradeArrayAvg(array: Assignment[]) {
   }
   return sum / array.length;
 }
+
 // If two weights combined don't equal 1, scale them proportionally so they do.
 function solveForTwoWeights(weightA: number, weightB: number) {
   return [
@@ -29,6 +30,15 @@ function solveForTwoWeights(weightA: number, weightB: number) {
     (1 / (weightA + weightB)) * weightB,
   ];
 }
+
+function seperateArrayByWeights(array: Assignment[], weights: number[]) {
+  return [
+    array.filter((index) => index.weight === weights[0]),
+    array.filter((index) => index.weight === weights[1]),
+    array.filter((index) => index.weight === weights[2]),
+  ];
+}
+
 // Get a weighted average of assignments with three different weight amounts
 export function weightedAverage(array: Assignment[], weights: number[]) {
   // Seperate array to be averaged seperately.
@@ -85,11 +95,4 @@ export function weightedAverage(array: Assignment[], weights: number[]) {
         100
     ) / 100
   );
-}
-function seperateArrayByWeights(array: Assignment[], weights: number[]) {
-  return [
-    array.filter((index) => index.weight === weights[0]),
-    array.filter((index) => index.weight === weights[1]),
-    array.filter((index) => index.weight === weights[2]),
-  ];
 }
