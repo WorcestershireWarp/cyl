@@ -148,15 +148,25 @@ function App() {
   const theoryAverageClass = classNames("average", {
     "average-failing": theoreticalAverage < 70,
   });
-  const realAverageClass = classNames(theoryAverageClass, {
+  const realAverageClass = classNames("average", {
     theory: showTheoreticalAverage,
     "average-failing": realAverage < 70,
+  });
+  const arrow =
+    realAverage < theoreticalAverage
+      ? "⇧"
+      : realAverage > theoreticalAverage
+      ? "⇩"
+      : "⇨";
+  const arrowClass = classNames({
+    "arrow-up": realAverage < theoreticalAverage,
+    "arrow-down": realAverage > theoreticalAverage,
   });
   return (
     <div className="App">
       <div className="averages">
         <span>
-          Average:
+          Current Average:
           <br />
           <span className={realAverageClass}>
             {realAverage.toLocaleString("en", {
@@ -167,8 +177,9 @@ function App() {
         </span>
         {showTheoreticalAverage && (
           <span>
-            Theoretical: <br />
+            Including Theoretical Assignments: <br />
             <span className={theoryAverageClass}>
+              <span className={arrowClass}>{arrow}</span>
               {theoreticalAverage.toLocaleString("en", {
                 useGrouping: false,
                 minimumFractionDigits: 2,

@@ -21,10 +21,10 @@
   opacity: 0.5;
 }
 
-.average-passing {
-  color: #0A0
+.average-failing, .arrow-down {
+  color: #F00
 }
 
-.average-failing {
-  color: #F00
+.arrow-up {
+  color: #0A0
 }
