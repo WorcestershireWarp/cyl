@@ -9,7 +9,7 @@ import { compressToBase64, decompressFromBase64 } from "lz-string";
 function App() {
   const [exportVisible, setExportVisible] = useState(false);
   const [importVisible, setImportVisible] = useState(false);
-
+  const [deleteAllVisible, setDeleteAllVisible] = useState(false);
   const [assignments, setAssignments] = useState<Assignment[]>(
     localStorage.getItem("assignments") === null
       ? [
@@ -245,6 +245,31 @@ function App() {
       >
         Import
       </button>
+      <Popup
+        visible={deleteAllVisible}
+        onClose={() => {
+          setDeleteAllVisible(false);
+        }}
+      >
+        Are you sure you want to delete all assignments?
+        <br />
+        <br />
+        <button
+          onClick={() => {
+            setDeleteAllVisible(false);
+            setAssignments([]);
+          }}
+        >
+          Yes
+        </button>
+        <button
+          onClick={() => {
+            setDeleteAllVisible(false);
+          }}
+        >
+          No
+        </button>
+      </Popup>
       <div className="averages">
         <span>
           Current Average:
@@ -272,7 +297,15 @@ function App() {
       <table>
         <thead>
           <tr>
-            <th />
+            <th>
+              <button
+                onClick={() => {
+                  setDeleteAllVisible(true);
+                }}
+              >
+                Delete All Assignments
+              </button>
+            </th>
             <th>Assignment</th>
             <th>Grade</th>
             <th>Weight</th>
