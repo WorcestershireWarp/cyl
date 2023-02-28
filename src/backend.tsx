@@ -14,15 +14,6 @@ export class Assignment {
   }
 }
 
-// Average the "grade" field of each assignment in an array
-function gradeArrayAvg(array: Assignment[]) {
-  let sum = 0;
-  for (const item of array) {
-    sum += item.grade;
-  }
-  return sum / array.length;
-}
-
 // If two weights combined don't equal 1, scale them proportionally so they do.
 function solveForTwoWeights(weightA: number, weightB: number) {
   return [
@@ -41,6 +32,14 @@ function seperateArrayByWeights(array: Assignment[], weights: number[]) {
 
 // Get a weighted average of assignments with three different weight amounts
 export function weightedAverage(array: Assignment[], weights: number[]) {
+  // Define a function to average the 'grade' value of an array of assignments
+  const gradeArrayAvg = (assignmentArray: Assignment[]) => {
+    let sum = 0;
+    for (const item of assignmentArray) {
+      sum += item.grade;
+    }
+    return sum / assignmentArray.length;
+  };
   // Seperate array to be averaged seperately.
   let [a, b, c] = seperateArrayByWeights(array, weights);
   // If all assignments have the same weight, return the average of the array.
