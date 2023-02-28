@@ -3,8 +3,13 @@ import "./App.css";
 import { weightedAverage, Assignment } from "./backend";
 import classNames from "classnames";
 import React from "react";
+import Popup from "react-animated-popup";
+import { compressToBase64, decompressFromBase64 } from "lz-string";
 
 function App() {
+  const [exportVisible, setExportVisible] = useState(false);
+  const [importVisible, setImportVisible] = useState(false);
+
   const [assignments, setAssignments] = useState<Assignment[]>([
     new Assignment("Example quiz", 94, 0.25),
     new Assignment("Example test", 74, 0.6),
@@ -13,6 +18,11 @@ function App() {
   const [createAssignment, setCreateAssignment] = useState<Assignment>(
     new Assignment("", 0, 0, false)
   );
+  const [importText, setImportText] = useState<string>("");
+  const importFromBase64 = (base64: string) => {
+    setAssignments(JSON.parse(decompressFromBase64(base64) ?? "[]"));
+    setImportVisible(false);
+  };
   const onAddAssignment = () => {
     setAssignments([...assignments, createAssignment]);
     setCreateAssignment(new Assignment("", 0, 0, false));
@@ -87,6 +97,11 @@ function App() {
     const temporary = [...assignments];
     temporary[index].theoretical = !temporary[index].theoretical;
     setAssignments(temporary);
+  };
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(
+      compressToBase64(JSON.stringify(assignments))
+    );
   };
 
   const assignmentList = assignments.map((assignment, index) => (
@@ -165,6 +180,64 @@ function App() {
   });
   return (
     <div className="App">
+      <Popup
+        visible={exportVisible}
+        onClose={() => {
+          setExportVisible(false);
+        }}
+      >
+        Copy this text and store it somewhere safe.
+        <textarea
+          style={{ overflowWrap: "anywhere", width: "350px", height: "200px" }}
+          onClick={(event) => {
+            // @ts-expect-error: Select is a textarea function but typescript insists otherwise for some reason.
+            event.target.select();
+          }}
+          readOnly
+          value={compressToBase64(JSON.stringify(assignments))}
+        />
+        <br />
+        Or click this button to copy it to your clipboard:
+        <button onClick={copyToClipboard}>Copy</button>
+      </Popup>
+      <button
+        onClick={() => {
+          setExportVisible(true);
+        }}
+      >
+        Export
+      </button>
+      <Popup
+        visible={importVisible}
+        onClose={() => {
+          setImportVisible(false);
+        }}
+      >
+        Paste the text from the export here:
+        <textarea
+          style={{ overflowWrap: "anywhere", width: "350px", height: "200px" }}
+          value={importText}
+          onChange={(event) => {
+            setImportText(event.target.value);
+          }}
+        />
+        <br />
+        <button
+          onClick={() => {
+            importFromBase64(importText);
+          }}
+        >
+          Import
+        </button>
+      </Popup>
+      <button
+        onClick={() => {
+          setImportVisible(true);
+          setImportText("");
+        }}
+      >
+        Import
+      </button>
       <div className="averages">
         <span>
           Current Average:
