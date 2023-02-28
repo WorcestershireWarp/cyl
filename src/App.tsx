@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import "./App.css";
 import { weightedAverage, Assignment } from "./backend";
 import classNames from "classnames";
@@ -10,11 +10,18 @@ function App() {
   const [exportVisible, setExportVisible] = useState(false);
   const [importVisible, setImportVisible] = useState(false);
 
-  const [assignments, setAssignments] = useState<Assignment[]>([
-    new Assignment("Example quiz", 94, 0.25),
-    new Assignment("Example test", 74, 0.6),
-    new Assignment("Example homework assignment", 0, 0.15),
-  ]);
+  const [assignments, setAssignments] = useState<Assignment[]>(
+    localStorage.getItem("assignments") === null
+      ? [
+          new Assignment("Example quiz", 94, 0.25),
+          new Assignment("Example test", 74, 0.6),
+          new Assignment("Example homework assignment", 0, 0.15),
+        ]
+      : JSON.parse(localStorage.getItem("assignments")!)
+  );
+  useEffect(() => {
+    localStorage.setItem("assignments", JSON.stringify(assignments));
+  }, [assignments]);
   const [createAssignment, setCreateAssignment] = useState<Assignment>(
     new Assignment("", 0, 0, false)
   );
