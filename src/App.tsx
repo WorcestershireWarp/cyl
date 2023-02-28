@@ -129,6 +129,7 @@ function App() {
       <td>
         <input
           type="checkbox"
+          className="theory-checkbox"
           onChange={() => {
             onModifyTheoretical(index);
           }}
@@ -240,6 +241,7 @@ function App() {
             <td>
               <input
                 type="checkbox"
+                className="theory-checkbox"
                 checked={createAssignment.theoretical}
                 onChange={(event) => {
                   onModifyCreate(event, "theoretical");

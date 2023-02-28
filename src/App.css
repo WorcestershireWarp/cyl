@@ -28,3 +28,9 @@
 .arrow-up {
   color: #0A0
 }
+
+.theory-checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: lightblue
+}
