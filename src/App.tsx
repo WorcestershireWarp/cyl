@@ -1,4 +1,4 @@
-import { type ChangeEvent, useState, useEffect } from "react";
+import { type ChangeEvent, useState, useEffect, useMemo } from "react";
 import "./App.css";
 import { weightedAverage, Assignment } from "./backend";
 import classNames from "classnames";
@@ -21,6 +21,18 @@ function App() {
   );
   useEffect(() => {
     localStorage.setItem("assignments", JSON.stringify(assignments));
+  }, [assignments]);
+  const [weights, setWeights] = useState<number[]>([]);
+  useMemo(() => {
+    const unpadded = assignments
+      .map((assignment) => assignment.weight)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .slice(0, 3);
+    const padded = Array.from(
+      { ...unpadded, length: 3 },
+      (value) => value ?? 0
+    );
+    setWeights(padded);
   }, [assignments]);
   const [createAssignment, setCreateAssignment] = useState<Assignment>(
     new Assignment("", 0, 0, false)
@@ -162,9 +174,9 @@ function App() {
   ));
   const realAverage = weightedAverage(
     assignments.filter((assignment) => !assignment.theoretical),
-    [0.6, 0.25, 0.15]
+    weights
   );
-  const theoreticalAverage = weightedAverage(assignments, [0.6, 0.25, 0.15]);
+  const theoreticalAverage = weightedAverage(assignments, weights);
   const showTheoreticalAverage = assignments.some(
     (assignment) => assignment.theoretical
   );
