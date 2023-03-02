@@ -1,33 +1,33 @@
-import { type Assignment } from "./backend";
+import { type Class } from "./backend";
 import React, { useState } from "react";
 import Popup from "react-animated-popup";
-import { compressToBase64 } from "lz-string";
+import { compressToBase64, decompressFromBase64 } from "lz-string";
 
 export function Popups({
   exportVisible,
   setExportVisible,
-  assignments,
+  classes,
   importVisible,
   setImportVisible,
   importFromBase64,
   deleteAllVisible,
   setDeleteAllVisible,
-  setAssignments,
+  onDeleteAllAssignments,
 }: {
   exportVisible: boolean;
   setExportVisible: (visible: boolean) => void;
-  assignments: Assignment[];
+  classes: Class[];
   importVisible: boolean;
   setImportVisible: (visible: boolean) => void;
   importFromBase64: (text: string) => void;
   deleteAllVisible: boolean;
   setDeleteAllVisible: (visible: boolean) => void;
-  setAssignments: (assignments: Assignment[]) => void;
+  onDeleteAllAssignments: () => void;
 }) {
   const [importText, setImportText] = useState("");
   const copyToClipboard = async () => {
     await navigator.clipboard.writeText(
-      compressToBase64(JSON.stringify(assignments))
+      compressToBase64(JSON.stringify(classes))
     );
   };
   return (
@@ -50,7 +50,7 @@ export function Popups({
             event.target.select();
           }}
           readOnly
-          value={compressToBase64(JSON.stringify(assignments))}
+          value={compressToBase64(JSON.stringify(classes))}
         />
         <br />
         Or click this button to copy it to your clipboard:
@@ -77,6 +77,7 @@ export function Popups({
         <br />
         <button
           onClick={() => {
+            decompressFromBase64(importText);
             importFromBase64(importText);
             setImportText("");
             setImportVisible(false);
@@ -97,7 +98,7 @@ export function Popups({
         <button
           onClick={() => {
             setDeleteAllVisible(false);
-            setAssignments([]);
+            onDeleteAllAssignments();
           }}
         >
           Yes

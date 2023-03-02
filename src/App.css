@@ -1,11 +1,28 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.app {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100vw;
+  height: 100vh;
 }
 
-.average { 
+.primary {
+  position: absolute;
+  right: 0;
+  width: calc(100vw - 200px);
+  text-align: center;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  height: 100vh;
+  justify-content: center;
+}
+
+.average {
   font-size: 3em;
   font-weight: 700;
 }
@@ -21,16 +38,48 @@
   opacity: 0.5;
 }
 
-.average-failing, .arrow-down {
-  color: #F00
+.average-failing,
+.arrow-down {
+  color: #f00;
 }
 
 .arrow-up {
-  color: #0A0
+  color: #0a0;
 }
 
 .theory-checkbox {
   width: 1rem;
   height: 1rem;
-  accent-color: lightblue
+  accent-color: lightblue;
+}
+
+.sidebar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 200px;
+  height: 100vh;
+  background-color: #bfdfe8;
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  padding-inline-start: 0;
+}
+
+li {
+  margin: 10px 0;
+}
+
+li button {
+  height: 35px;
+  line-height: 10px;
+  width: 100%;
+  border-radius: 10px;
+  background-color: #d2e3e7;
+}
+
+.selected {
+  background-color: #58a6b8;
 }

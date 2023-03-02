@@ -19,6 +19,7 @@ specifiers:
   eslint-plugin-react: ^7.32.2
   eslint-plugin-sonarjs: ^0.18.0
   eslint-plugin-unicorn: ^45.0.2
+  immer: ^9.0.19
   lz-string: ^1.4.4
   onchange: ^7.1.0
   prettier: ^2.8.4
@@ -32,6 +33,7 @@ specifiers:
 
 dependencies:
   classnames: 2.3.2
+  immer: 9.0.19
   lz-string: 1.4.4
   react: 18.2.0
   react-animated-popup: 0.1.8_react@18.2.0
@@ -2040,6 +2042,10 @@ packages:
     resolution: {integrity: sha512-MAb38BcSbH0eHNBxn7ql2NH/kX33OkB3lZ1BNdh7ENeRChHTYsTvWrMubiIAMNS2llXEEgZ1MUOBtXChP3kaFQ==}
     engines: {node: '>= 4'}
     dev: true
+
+  /immer/9.0.19:
+    resolution: {integrity: sha512-eY+Y0qcsB4TZKwgQzLaE/lqYMlKhv5J9dyd2RhhtGhNo2njPXDqU9XPfcNfa3MIDsdtZt5KlkIsirlo4dHsWdQ==}
+    dev: false
 
   /import-fresh/3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}

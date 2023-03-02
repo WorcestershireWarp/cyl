@@ -1,6 +1,9 @@
+import { immerable } from "immer";
+
 // Create a class to hold assignment data in a more efficient manner.
 export class Assignment {
   public theoretical;
+  [immerable] = true;
   constructor(
     public name: string,
     public grade: number,
@@ -11,6 +14,14 @@ export class Assignment {
     this.grade = grade;
     this.weight = weight;
     this.theoretical = theoretical ?? false; // If "theoretical" wasn't provided in the constructor, then assume it's false. This makes code easier to read.
+  }
+}
+
+export class Class {
+  [immerable] = true;
+  constructor(public name: string, public assignments: Assignment[]) {
+    this.name = name;
+    this.assignments = assignments;
   }
 }
 

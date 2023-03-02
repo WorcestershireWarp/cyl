@@ -1,56 +1,60 @@
-import { type ChangeEvent, useState, useEffect, useMemo } from "react";
+import { type ChangeEvent, useState, useEffect } from "react";
 import "./App.css";
-import { Assignment } from "./backend";
+import { Assignment, Class } from "./backend";
 import React from "react";
 import { decompressFromBase64 } from "lz-string";
 import { AssignmentTable } from "./AssignmentTable";
 import { Popups } from "./Popups";
 import { Averages } from "./Averages";
+import { produce } from "immer";
+import { Sidebar } from "./Sidebar";
 
 function App() {
   const [exportVisible, setExportVisible] = useState(false);
   const [importVisible, setImportVisible] = useState(false);
   const [deleteAllVisible, setDeleteAllVisible] = useState(false);
-  const [assignments, setAssignments] = useState<Assignment[]>(
-    localStorage.getItem("assignments") === null
-      ? [
-          new Assignment("Example quiz", 94, 0.25),
-          new Assignment("Example test", 74, 0.6),
-          new Assignment("Example homework assignment", 0, 0.15),
-        ]
-      : JSON.parse(localStorage.getItem("assignments")!)
+  const [classes, setClasses] = useState<Class[]>(
+    localStorage.getItem("classes") === null
+      ? []
+      : JSON.parse(localStorage.getItem("classes")!)
   );
+  const [currentClass, setCurrentClass] = useState(0);
   useEffect(() => {
-    localStorage.setItem("assignments", JSON.stringify(assignments));
-  }, [assignments]);
-  const [weights, setWeights] = useState<number[]>([0.15, 0.25, 0.6]);
-  useMemo(() => {
-    const unpadded = assignments
-      .map((assignment) => assignment.weight)
-      .filter((value, index, self) => self.indexOf(value) === index)
-      .slice(0, 3);
-    const padded = Array.from(
-      { ...unpadded, length: 3 },
-      (value) => value ?? 0
-    );
-    setWeights(padded);
-  }, [assignments]);
+    localStorage.setItem("classes", JSON.stringify(classes));
+  }, [classes]);
+  const unpadded =
+    classes.length > 0
+      ? classes[currentClass].assignments
+          .map((assignment) => assignment.weight)
+          .filter((value, index, self) => self.indexOf(value) === index)
+          .slice(0, 3)
+      : [];
+  const padded = Array.from({ ...unpadded, length: 3 }, (value) => value ?? 0);
   const [createAssignment, setCreateAssignment] = useState<Assignment>(
     new Assignment("", 0, 0, false)
   );
   const importFromBase64 = (base64: string) => {
-    setAssignments(JSON.parse(decompressFromBase64(base64) ?? "[]"));
+    setClasses(JSON.parse(decompressFromBase64(base64) ?? "[]"));
+    setCurrentClass(0);
+  };
+  const createClass = (name: string) => {
+    const nextState = produce(classes, (draft) => {
+      draft.push(new Class(name, []));
+    });
+    setClasses(nextState);
   };
   const onAddAssignment = () => {
-    setAssignments([...assignments, createAssignment]);
+    const nextState = produce(classes, (draft) => {
+      draft[currentClass].assignments.push(createAssignment);
+    });
+    setClasses(nextState);
     setCreateAssignment(new Assignment("", 0, 0, false));
   };
   const onModifyCreate = (
     event: ChangeEvent<HTMLInputElement>,
     property: string
   ) => {
-    const newAssignment = { ...createAssignment };
-    if (Object.prototype.hasOwnProperty.call(newAssignment, property)) {
+    const nextState = produce(createAssignment, (newAssignment) => {
       if (
         (property === "grade" || property === "weight") &&
         (Number(event.target.value) < 0 ||
@@ -61,24 +65,30 @@ function App() {
       if (property === "weight" && Number(event.target.value) > 1) {
         return;
       }
-      if (property === "grade" || property === "weight") {
-        newAssignment[property] = Number(event.target.value);
-      } else if (property === "theoretical") {
-        newAssignment[property] = !newAssignment.theoretical;
-      } else {
-        // @ts-expect-error: hasOwnProperty ensures next line is type-safe.
-        newAssignment[property] = event.target.value;
+      switch (property) {
+        case "name": {
+          newAssignment[property] = event.target.value;
+          break;
+        }
+        case "grade":
+        case "weight": {
+          newAssignment[property] = Number(event.target.value);
+          break;
+        }
+        case "theoretical": {
+          newAssignment[property] = !newAssignment[property];
+          break;
+        }
       }
-    }
-    setCreateAssignment(newAssignment);
+    });
+    setCreateAssignment(nextState);
   };
   const onModifyAssignment = (
     event: ChangeEvent<HTMLInputElement>,
     index: number,
     property: string
   ) => {
-    const newAssignments = [...assignments];
-    if (Object.prototype.hasOwnProperty.call(newAssignments[index], property)) {
+    const nextState = produce(classes, (draft) => {
       if (
         (property === "grade" || property === "weight") &&
         (Number(event.target.value) < 0 ||
@@ -89,60 +99,81 @@ function App() {
       if (property === "weight" && Number(event.target.value) > 1) {
         return;
       }
-      if (property === "grade" || property === "weight") {
-        newAssignments[index][property] = Number(event.target.value);
-      } else if (property === "theoretical") {
-        newAssignments[index][property] = !newAssignments[index].theoretical;
-      } else {
-        // @ts-expect-error: hasOwnProperty ensures next line is type-safe.
-        newAssignments[index][property] = event.target.value;
+      switch (property) {
+        case "name": {
+          draft[currentClass].assignments[index][property] = event.target.value;
+          break;
+        }
+        case "grade":
+        case "weight": {
+          draft[currentClass].assignments[index][property] = Number(
+            event.target.value
+          );
+          break;
+        }
+        case "theoretical": {
+          draft[currentClass].assignments[index][property] =
+            !draft[currentClass].assignments[index][property];
+          break;
+        }
       }
-    }
-    setAssignments(newAssignments);
+    });
+    setClasses(nextState);
   };
   const onDeleteAssignment = (index: number) => {
-    const temporary = [...assignments];
-    temporary.splice(index, 1);
-    setAssignments(temporary);
+    const nextState = produce(classes, (draft) => {
+      draft[currentClass].assignments.splice(index, 1);
+    });
+    setClasses(nextState);
+  };
+
+  const onDeleteAllAssignments = () => {
+    const nextState = produce(classes, (draft) => {
+      draft[currentClass].assignments = [];
+    });
+    setClasses(nextState);
   };
 
   return (
-    <div className="App">
-      <Popups
-        exportVisible={exportVisible}
-        setExportVisible={setExportVisible}
-        importVisible={importVisible}
+    <div className="app">
+      <Sidebar
+        classes={classes}
+        currentClass={currentClass}
+        createClass={createClass}
+        setCurrentClass={setCurrentClass}
         setImportVisible={setImportVisible}
-        deleteAllVisible={deleteAllVisible}
-        setDeleteAllVisible={setDeleteAllVisible}
-        assignments={assignments}
-        setAssignments={setAssignments}
-        importFromBase64={importFromBase64}
+        setExportVisible={setExportVisible}
       />
-      <button
-        onClick={() => {
-          setImportVisible(true);
-        }}
-      >
-        Import
-      </button>
-      <button
-        onClick={() => {
-          setExportVisible(true);
-        }}
-      >
-        Export
-      </button>
-      <Averages assignments={assignments} weights={weights} />
-      <AssignmentTable
-        setDeleteAllVisible={setDeleteAllVisible}
-        assignments={assignments}
-        onAddAssignment={onAddAssignment}
-        onModifyCreate={onModifyCreate}
-        createAssignment={createAssignment}
-        onDeleteAssignment={onDeleteAssignment}
-        onModifyAssignment={onModifyAssignment}
-      />
+      <div className="primary">
+        <Popups
+          exportVisible={exportVisible}
+          setExportVisible={setExportVisible}
+          importVisible={importVisible}
+          setImportVisible={setImportVisible}
+          deleteAllVisible={deleteAllVisible}
+          setDeleteAllVisible={setDeleteAllVisible}
+          classes={classes}
+          onDeleteAllAssignments={onDeleteAllAssignments}
+          importFromBase64={importFromBase64}
+        />
+        <Averages
+          assignments={
+            classes.length > 0 ? classes[currentClass].assignments : []
+          }
+          weights={padded}
+        />
+        <AssignmentTable
+          setDeleteAllVisible={setDeleteAllVisible}
+          assignments={
+            classes.length > 0 ? classes[currentClass].assignments : []
+          }
+          onAddAssignment={onAddAssignment}
+          onModifyCreate={onModifyCreate}
+          createAssignment={createAssignment}
+          onDeleteAssignment={onDeleteAssignment}
+          onModifyAssignment={onModifyAssignment}
+        />
+      </div>
     </div>
   );
 }
