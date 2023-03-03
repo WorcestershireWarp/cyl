@@ -160,6 +160,8 @@ export function Sidebar({
             >
               Export
             </button>
+          </li>
+          <li>
             <button
               onClick={() => {
                 setExportVisible(false);
