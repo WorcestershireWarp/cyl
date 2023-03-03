@@ -45,7 +45,7 @@ function App() {
   };
   const onAddAssignment = () => {
     const nextState = produce(classes, (draft) => {
-      draft[currentClass].assignments.push(createAssignment);
+      draft[currentClass].assignments.unshift(createAssignment);
     });
     setClasses(nextState);
     setCreateAssignment(new Assignment("", 0, 0, false));
