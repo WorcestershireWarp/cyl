@@ -138,6 +138,7 @@ function App() {
     <div className="app">
       <Sidebar
         classes={classes}
+        setClasses={setClasses}
         currentClass={currentClass}
         createClass={createClass}
         setCurrentClass={setCurrentClass}

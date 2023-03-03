@@ -10,6 +10,10 @@
   height: 100vh;
 }
 
+table {
+  height: 100vh;
+}
+
 .primary {
   position: absolute;
   right: 0;
@@ -19,7 +23,8 @@
   flex-flow: column nowrap;
   align-items: center;
   height: 100vh;
-  justify-content: center;
+  overflow-y: scroll;
+
 }
 
 .average {

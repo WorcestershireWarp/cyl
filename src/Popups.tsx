@@ -1,7 +1,7 @@
 import { type Class } from "./backend";
 import React, { useState } from "react";
 import Popup from "react-animated-popup";
-import { compressToBase64, decompressFromBase64 } from "lz-string";
+import { compressToBase64 } from "lz-string";
 
 export function Popups({
   exportVisible,
@@ -77,7 +77,6 @@ export function Popups({
         <br />
         <button
           onClick={() => {
-            decompressFromBase64(importText);
             importFromBase64(importText);
             setImportText("");
             setImportVisible(false);

@@ -1,10 +1,11 @@
-import { type Class } from "./backend";
+import { Class } from "./backend";
 import classNames from "classnames";
 import React, { useState } from "react";
 import Popup from "react-animated-popup";
 
 export function Sidebar({
   classes,
+  setClasses,
   setImportVisible,
   setExportVisible,
   currentClass,
@@ -12,6 +13,7 @@ export function Sidebar({
   createClass,
 }: {
   classes: Class[];
+  setClasses: (classes: Class[]) => void;
   setImportVisible: (visible: boolean) => void;
   setExportVisible: (visible: boolean) => void;
   currentClass: number;
@@ -20,6 +22,9 @@ export function Sidebar({
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [className, setClassName] = useState("");
+  const [importJsonOpen, setImportJsonOpen] = useState(false);
+  const [importJson, setImportJson] = useState("");
+  const [importJsonName, setImportJsonName] = useState("");
   const classList = classes.map((classObject, index) => {
     const classClass = classNames({ selected: index === currentClass });
     return (
@@ -38,6 +43,57 @@ export function Sidebar({
   return (
     <>
       <span style={{ textAlign: "center" }}>
+        <Popup
+          visible={importJsonOpen}
+          onClose={() => {
+            setImportJsonOpen(false);
+          }}
+        >
+          <p>
+            Manually import from raw JSON if you are a programmer who knows what
+            that means. <br />
+            All objects <i>must</i> contain four keys, `name`, `grade`,
+            `weight`, and `theoretical`.
+          </p>
+          <br />
+          <textarea
+            style={{ width: "400px", height: "350px" }}
+            value={importJson}
+            onChange={(event) => {
+              setImportJson(event.target.value);
+            }}
+          />
+          <br />
+          <p>
+            Since encoding the name of the class would make the JSON harder to
+            create, please input the name of the class here:
+          </p>
+          <input
+            placeholder="Name"
+            onChange={(event) => {
+              setImportJsonName(event.target.value);
+            }}
+            value={importJsonName}
+          />
+          <button
+            onClick={() => {
+              setClasses([
+                ...classes,
+                new Class(importJsonName, JSON.parse(importJson)),
+              ]);
+              setImportJsonOpen(false);
+            }}
+          >
+            Import
+          </button>
+          <button
+            onClick={() => {
+              setImportJsonOpen(false);
+            }}
+          >
+            Cancel
+          </button>
+        </Popup>
         <Popup
           visible={createOpen}
           onClose={() => {
@@ -103,6 +159,15 @@ export function Sidebar({
               }}
             >
               Export
+            </button>
+            <button
+              onClick={() => {
+                setExportVisible(false);
+                setImportVisible(false);
+                setImportJsonOpen(true);
+              }}
+            >
+              Import from JSON
             </button>
           </li>
         </ul>

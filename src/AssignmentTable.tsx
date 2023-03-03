@@ -78,6 +78,11 @@ export function AssignmentTable({
               onChange={(event) => {
                 onModifyCreate(event, "name");
               }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && createAssignment.name !== "") {
+                  onAddAssignment();
+                }
+              }}
             />
           </td>
           <td>
@@ -86,6 +91,11 @@ export function AssignmentTable({
               type="number"
               onChange={(event) => {
                 onModifyCreate(event, "grade");
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && createAssignment.name !== "") {
+                  onAddAssignment();
+                }
               }}
             />
           </td>
@@ -96,6 +106,11 @@ export function AssignmentTable({
               onChange={(event) => {
                 onModifyCreate(event, "weight");
               }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && createAssignment.name !== "") {
+                  onAddAssignment();
+                }
+              }}
             />
           </td>
           <td>
@@ -105,6 +120,11 @@ export function AssignmentTable({
               checked={createAssignment.theoretical}
               onChange={(event) => {
                 onModifyCreate(event, "theoretical");
+              }}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" && createAssignment.name !== "") {
+                  onAddAssignment();
+                }
               }}
             />
           </td>
