@@ -18,10 +18,17 @@ function App() {
       ? []
       : JSON.parse(localStorage.getItem("classes")!)
   );
-  const [currentClass, setCurrentClass] = useState(0);
+  const [currentClass, setCurrentClass] = useState(
+    localStorage.getItem("currentClass") === null
+      ? 0
+      : JSON.parse(localStorage.getItem("currentClass")!)
+  );
   useEffect(() => {
     localStorage.setItem("classes", JSON.stringify(classes));
   }, [classes]);
+  useEffect(() => {
+    localStorage.setItem("currentClass", JSON.stringify(currentClass));
+  }, [currentClass]);
   const unpadded =
     classes.length > 0
       ? classes[currentClass].assignments
