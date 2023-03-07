@@ -1,5 +1,28 @@
 import { immerable } from "immer";
 
+export function isAssignment(argument: unknown): argument is Assignment {
+  return (
+    argument !== null &&
+    typeof argument === "object" &&
+    "name" in argument &&
+    "weight" in argument &&
+    "grade" in argument &&
+    "theoretical" in argument &&
+    typeof argument.name === "string" &&
+    typeof argument.weight === "number" &&
+    typeof argument.grade === "number" &&
+    typeof argument.theoretical === "boolean"
+  );
+}
+
+export function isAssignmentArray(argument: unknown): argument is Assignment[] {
+  return (
+    argument !== null &&
+    Array.isArray(argument) &&
+    argument.every((element) => isAssignment(element))
+  );
+}
+
 // Create a class to hold assignment data in a more efficient manner.
 export class Assignment {
   public theoretical;

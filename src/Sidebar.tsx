@@ -1,8 +1,8 @@
-import { Class } from "./backend";
+import { Class, isAssignmentArray } from "./backend";
 import classNames from "classnames";
 import React, { useState } from "react";
 import Popup from "react-animated-popup";
-
+import Papa from "papaparse";
 export function Sidebar({
   classes,
   setClasses,
@@ -22,9 +22,9 @@ export function Sidebar({
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [className, setClassName] = useState("");
-  const [importJsonOpen, setImportJsonOpen] = useState(false);
-  const [importJson, setImportJson] = useState("");
-  const [importJsonName, setImportJsonName] = useState("");
+  const [importCsvOpen, setImportCsvOpen] = useState(false);
+  const [importCsv, setImportCsv] = useState("");
+  const [importCsvName, setImportCsvName] = useState("");
   const classList = classes.map((classObject, index) => {
     const classClass = classNames({ selected: index === currentClass });
     return (
@@ -44,51 +44,55 @@ export function Sidebar({
     <>
       <span style={{ textAlign: "center" }}>
         <Popup
-          visible={importJsonOpen}
+          visible={importCsvOpen}
           onClose={() => {
-            setImportJsonOpen(false);
+            setImportCsvOpen(false);
           }}
         >
           <p>
-            Manually import from raw JSON if you are a programmer who knows what
-            that means. <br />
-            All objects <i>must</i> contain four keys, `name`, `grade`,
-            `weight`, and `theoretical`.
+            Manually import from CSV (aka copy-paste from Excel) <br />
+            The table <i>must</i> have a header row that contains `name`,
+            `grade`, `weight`, and `theoretical`, where `grade` and `weight` are
+            numbers and `theoretical` is &quot;true&quot; or &quot;false&quot;
           </p>
           <br />
           <textarea
             style={{ width: "400px", height: "350px" }}
-            value={importJson}
+            value={importCsv}
             onChange={(event) => {
-              setImportJson(event.target.value);
+              setImportCsv(event.target.value);
             }}
           />
           <br />
           <p>
-            Since encoding the name of the class would make the JSON harder to
+            Since encoding the name of the class would make the CSV harder to
             create, please input the name of the class here:
           </p>
           <input
             placeholder="Name"
             onChange={(event) => {
-              setImportJsonName(event.target.value);
+              setImportCsvName(event.target.value);
             }}
-            value={importJsonName}
+            value={importCsvName}
           />
           <button
             onClick={() => {
-              setClasses([
-                ...classes,
-                new Class(importJsonName, JSON.parse(importJson)),
-              ]);
-              setImportJsonOpen(false);
+              const data = Papa.parse(importCsv, {
+                header: true,
+                dynamicTyping: true,
+                skipEmptyLines: true,
+              }).data;
+              if (isAssignmentArray(data)) {
+                setClasses([...classes, new Class(importCsvName, data)]);
+                setImportCsvOpen(false);
+              }
             }}
           >
             Import
           </button>
           <button
             onClick={() => {
-              setImportJsonOpen(false);
+              setImportCsvOpen(false);
             }}
           >
             Cancel
@@ -166,10 +170,10 @@ export function Sidebar({
               onClick={() => {
                 setExportVisible(false);
                 setImportVisible(false);
-                setImportJsonOpen(true);
+                setImportCsvOpen(true);
               }}
             >
-              Import from JSON
+              Import from CSV
             </button>
           </li>
         </ul>
